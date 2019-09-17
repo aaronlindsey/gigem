@@ -1,0 +1,10 @@
+---
+applications:
+  - name: gigem
+    memory: 768M
+    path: ./build/libs/gigem-0.0.1-SNAPSHOT.jar
+    env:
+      SPRING_PROFILES_ACTIVE:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+}}'
+    services:
+      - gigem

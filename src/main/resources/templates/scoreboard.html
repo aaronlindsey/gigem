@@ -1,0 +1,18 @@
+{{> header}}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Score</th>
+        <th scope="col">Player</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#scoreboardRows}}
+        <tr>
+            <td>{{playerScore}}</td>
+            <td>{{playerName}}</td>
+        </tr>
+    {{/scoreboardRows}}
+    </tbody>
+</table>
+{{> footer}}

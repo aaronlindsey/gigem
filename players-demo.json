@@ -1,0 +1,17 @@
+[
+  {
+    "id": "582f9182-706d-48b5-8988-7a48e2841edb",
+    "token": "Alice",
+    "name": "Alice"
+  },
+  {
+    "id": "7b33b04f-ce33-49c2-a665-0ad0f8d50e86",
+    "token": "Bob",
+    "name": "Bob"
+  },
+  {
+    "id": "0ca0e66e-7f5a-4859-b09a-eac80bdd784d",
+    "token": "Carol",
+    "name": "Carol"
+  }
+]

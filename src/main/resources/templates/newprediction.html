@@ -1,0 +1,51 @@
+{{> header}}
+<h1>Gig'em Aggies!</h1>
+{{#success}}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    Your prediction has been recorded.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/success}}
+{{#error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    There was an issue submitting your prediction: {{error}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/error}}
+<form action="/newprediction" method="post" class="needs-validation" novalidate>
+    <div class="form-group">
+        <label for="score">How many points will the Aggies score next game?</label>
+        <input type="text" class="form-control" id="score" name="score" pattern="^0*([3-9]|[1-9][0-9])$" required>
+        <div class="invalid-feedback">
+            Choose a number from 3 to 99. (Less than 3 means you're a two-percenter.)
+        </div>
+    </div>
+    <input type="hidden" name="token" value="{{token}}" required>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+{{> footer}}

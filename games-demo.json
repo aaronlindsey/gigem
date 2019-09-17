@@ -1,0 +1,14 @@
+[
+  {
+    "id": "6f32a08b-ab36-454d-ab40-aa5caa4bc5c5",
+    "team": "Team Foo",
+    "startTime": "2019-08-30T00:30:00Z",
+    "score": 41
+  },
+  {
+    "id": "76987b6a-7809-40b7-b032-fcd8ef26538a",
+    "team": "Team Bar",
+    "startTime": "2099-01-01T00:00:00Z",
+    "score": null
+  }
+]
