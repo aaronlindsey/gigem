@@ -41,3 +41,4 @@ out/
 *views.log
 
 backups
+*.pem
