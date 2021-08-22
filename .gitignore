@@ -30,3 +30,14 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Geode ###
+*.if
+*.crf
+*.drf
+*.krf
+*.lk
+*view.dat
+*views.log
+
+backups
