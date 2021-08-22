@@ -13,29 +13,22 @@ Yes, using a distributed database with caching is quite unnecessary for this app
 ## Running Locally
 
 Prerequisites:
-- Apache Geode 1.9.x
+
 - Java 11 or higher
 
-Start a Geode cluster:
-```
-gfsh -e "start locator --name=locator" -e "configure pdx --disk-store=DEFAULT" -e "start server --name=server"
-```
-
 Build and run the Spring Boot app:
+
 ```
 ./gradlew build
 java -jar build/libs/gigem-0.0.1-SNAPSHOT.jar
 ```
 
 Populate demo data:
+
 ```
 chmod +x demo.sh
 ./demo.sh
 ```
-
-## Running on Cloud Foundry and Pivotal Cloud Cache
-
-You can also run this app by pushing it Cloud Foundry using the provided `manifest.yml` and binding it to an instance of Pivotal Cloud Cache. [Pivotal Web Services](https://run.pivotal.io/) provides a managed Cloud Foundry environment with access to Pivotal Cloud Cache and has a free trial option.
 
 ## How To Play
 
