@@ -43,3 +43,11 @@ chmod +x demo.sh
 - There are three REST endpoints, `/api/games`, `/api/players`, `/api/predictions`, which support GET, POST, and DELETE requests.
 - The default username/password is `admin`/`admin`.
 
+## Change Log
+
+- **2021-09-03**
+  - Each player's worst score will now be dropped in the overall score calculation.
+  - It is now possible to earn a bonus for predicting the exact score of a game.
+- **2021-08-21**
+  - Allow running the game as a single Java process.
+  - Upgrade gradle and gradle dependencies.

@@ -18,14 +18,27 @@
 {{/actualScore}}
 {{#gameDetailsRows}}
 <div class="row">
-  <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
-      {{name}}
-  </div>
-  <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
-      <div class="progress" >
-        <div class="progress-bar" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{score}}" aria-valuemin="0" aria-valuemax="{{maxScore}}">{{score}}</div>
-      </div>
-  </div>
+    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+        {{name}}
+    </div>
+    {{^bonus}}
+    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
+        <div class="progress" >
+            <div class="progress-bar" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{score}}" aria-valuemin="0" aria-valuemax="{{maxScore}}">
+                {{score}}
+            </div>
+        </div>
+    </div>
+    {{/bonus}}
+    {{#bonus}}
+    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
+        <div class="progress" >
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{score}}" aria-valuemin="0" aria-valuemax="{{maxScore}}">
+                {{score}} ({{amount}} BONUS)
+            </div>
+        </div>
+    </div>
+    {{/bonus}}
 </div>
 {{/gameDetailsRows}}
 {{^gameDetailsRows}}
