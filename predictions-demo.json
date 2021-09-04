@@ -1,11 +1,5 @@
 [
   {
-    "id": "6795252c-266a-481a-be8b-2b4ea3dbe194",
-    "playerId": "582f9182-706d-48b5-8988-7a48e2841edb",
-    "score": 21,
-    "submittedTime": "2019-08-29T03:25:21Z"
-  },
-  {
     "id": "80a89937-c8db-4c16-9d5c-5dc48f3ec773",
     "playerId": "7b33b04f-ce33-49c2-a665-0ad0f8d50e86",
     "score": 56,
@@ -14,7 +8,49 @@
   {
     "id": "dc9a0a63-6d36-400f-9ed0-1aa37fbf709f",
     "playerId": "0ca0e66e-7f5a-4859-b09a-eac80bdd784d",
-    "score": 52,
+    "score": 41,
     "submittedTime": "2019-08-29T03:48:41Z"
+  },
+  {
+    "id": "6972f889-0b62-4248-b0e0-20c5ae25e883",
+    "playerId": "7b33b04f-ce33-49c2-a665-0ad0f8d50e86",
+    "score": 999999,
+    "submittedTime": "2019-09-29T03:46:30Z"
+  },
+  {
+    "id": "c204a144-af00-4b0e-9c1b-2fcad20b28ae",
+    "playerId": "0ca0e66e-7f5a-4859-b09a-eac80bdd784d",
+    "score": 41,
+    "submittedTime": "2019-09-29T03:48:41Z"
+  },
+  {
+    "id": "6795252c-266a-481a-be8b-2b4ea3dbe194",
+    "playerId": "582f9182-706d-48b5-8988-7a48e2841edb",
+    "score": 21,
+    "submittedTime": "2019-09-29T03:25:21Z"
+  },
+  {
+    "id": "9cfac096-d321-49ab-81e0-6b58a4d2fc58",
+    "playerId": "7b33b04f-ce33-49c2-a665-0ad0f8d50e86",
+    "score": 1,
+    "submittedTime": "2019-10-29T03:46:30Z"
+  },
+  {
+    "id": "b4df6833-b0e0-4336-abc5-5036201e4264",
+    "playerId": "0ca0e66e-7f5a-4859-b09a-eac80bdd784d",
+    "score": 11,
+    "submittedTime": "2019-10-29T03:48:41Z"
+  },
+  {
+    "id": "a2630fe9-b913-488b-a2c3-bcf1982ca86e",
+    "playerId": "582f9182-706d-48b5-8988-7a48e2841edb",
+    "score": 111,
+    "submittedTime": "2019-10-29T03:25:21Z"
+  },
+  {
+    "id": "5e575cb7-252d-4067-8be5-29ea7ec1b5f4",
+    "playerId": "582f9182-706d-48b5-8988-7a48e2841edb",
+    "score": 1234,
+    "submittedTime": "2019-11-29T03:25:21Z"
   }
 ]
