@@ -1,0 +1,15 @@
+[Unit]
+Description=Gig'em Game
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/gigem
+ExecStart=java -Dserver.port=443 -Dsecurity.require-ssl=true -Dserver.ssl.key-store=keystore.p12 -Dserver.ssl.key-store-password=xxxxxxxx -Dserver.ssl.keyStoreType=PKCS12 -Dserver.ssl.keyAlias=tomcat -jar gigem-0.0.1-SNAPSHOT.jar
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
