@@ -42,3 +42,5 @@ out/
 
 backups
 *.pem
+
+.DS_Store
