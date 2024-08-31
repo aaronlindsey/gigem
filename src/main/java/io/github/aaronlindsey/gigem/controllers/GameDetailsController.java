@@ -1,11 +1,11 @@
 package io.github.aaronlindsey.gigem.controllers;
 
 import io.github.aaronlindsey.gigem.entities.Game;
-import io.github.aaronlindsey.gigem.entities.Player;
 import io.github.aaronlindsey.gigem.exceptions.EntityNotFoundException;
 import io.github.aaronlindsey.gigem.repositories.GameRepository;
 import io.github.aaronlindsey.gigem.repositories.PlayerRepository;
 import io.github.aaronlindsey.gigem.services.PlayerGamePredictionsService;
+import io.github.aaronlindsey.gigem.services.PlayerGameScoresService;
 import io.github.aaronlindsey.gigem.viewcomponents.BonusLabel;
 import io.github.aaronlindsey.gigem.viewcomponents.GameDetailsRow;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static io.github.aaronlindsey.gigem.utilities.Utilities.toStream;
-import static java.lang.Math.abs;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -29,16 +29,19 @@ public class GameDetailsController {
   private final GameRepository gameRepository;
   private final PlayerRepository playerRepository;
   private final PlayerGamePredictionsService playerGamePredictionsService;
+  private final PlayerGameScoresService playerGameScoresService;
 
   @Value("${exactPredictionBonus}")
   private Integer exactPredictionBonus;
 
   public GameDetailsController(GameRepository gameRepository,
                                PlayerRepository playerRepository,
-                               PlayerGamePredictionsService playerGamePredictionsService) {
+                               PlayerGamePredictionsService playerGamePredictionsService,
+                               PlayerGameScoresService playerGameScoresService) {
     this.gameRepository = gameRepository;
     this.playerRepository = playerRepository;
     this.playerGamePredictionsService = playerGamePredictionsService;
+    this.playerGameScoresService = playerGameScoresService;
   }
 
   @GetMapping("/gamedetails/{id}")
@@ -57,44 +60,35 @@ public class GameDetailsController {
   }
 
   private ModelAndView gameDetailsView(Game game, Map<UUID, Integer> predictionsByPlayer) {
-    int maxScore = getMaxScoreForGame(game, predictionsByPlayer);
+    int maxPrediction = getMaxPredictionForGame(game, predictionsByPlayer);
+
+    Optional<Map<UUID, Integer>> scoresByPlayerOpt = playerGameScoresService.getScoresByPlayerForGame(game.getId());
 
     List<GameDetailsRow> gameDetailsRows = toStream(playerRepository.findAll())
-        .map(p -> toGameDetailsRow(game, p, predictionsByPlayer, maxScore))
+        .map(p -> {
+          int prediction = predictionsByPlayer.putIfAbsent(p.getId(), 0);
+          if (scoresByPlayerOpt.isPresent()) {
+            Integer score = scoresByPlayerOpt.get().get(p.getId());
+            BonusLabel bonus = prediction == game.getScore() ? new BonusLabel(exactPredictionBonus) : null;
+            return new GameDetailsRow(p.getName(), prediction, maxPrediction, score, bonus);
+          }
+          return new GameDetailsRow(p.getName(), prediction, maxPrediction);
+        })
         .collect(toList());
 
     ModelAndView mav = gameDetailsView(game);
-    mav.addObject("maxScore", maxScore);
+    mav.addObject("maxPrediction", maxPrediction);
     mav.addObject("gameDetailsRows", gameDetailsRows);
 
     if (game.getScore() != null) {
-      mav.addObject("actualScore", new GameDetailsRow("Actual Score", game.getScore(), maxScore));
-      gameDetailsRows.sort(comparing(r -> abs(game.getScore() - r.getScore())));
+      mav.addObject("actualScore", new GameDetailsRow("Actual Score", game.getScore(), maxPrediction));
+      gameDetailsRows.sort(comparing(r -> r.getScore()));
     }
 
     return mav;
   }
 
-  private GameDetailsRow toGameDetailsRow(Game g, Player p, Map<UUID, Integer> predictionsByPlayer, int maxScore) {
-    if (!predictionsByPlayer.containsKey(p.getId())) {
-      return new GameDetailsRow(p.getName(), 0, maxScore);
-    }
-
-    int score = predictionsByPlayer.get(p.getId());
-
-    if (g.getScore() == null) {
-      return new GameDetailsRow(p.getName(), score, maxScore);
-    }
-
-    BonusLabel bonus = null;
-    if (g.getScore().equals(score)) {
-      bonus = new BonusLabel(exactPredictionBonus);
-    }
-
-    return new GameDetailsRow(p.getName(), score, maxScore, bonus);
-  }
-
-  private static int getMaxScoreForGame(Game game, Map<UUID, Integer> predictionsByPlayer) {
+  private static int getMaxPredictionForGame(Game game, Map<UUID, Integer> predictionsByPlayer) {
     int maxScorePrediction = predictionsByPlayer.values().stream()
         .max(Integer::compare)
         .orElse(0);
