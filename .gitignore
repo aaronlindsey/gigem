@@ -44,3 +44,4 @@ backups
 *.pem
 
 .DS_Store
+bin
