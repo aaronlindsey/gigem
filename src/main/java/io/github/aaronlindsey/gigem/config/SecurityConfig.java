@@ -11,7 +11,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) {
-    web.ignoring().mvcMatchers("/", "/gamedetails/**", "/newprediction", "/actuator/health");
+    web.ignoring().mvcMatchers(
+        "/",
+        "/gamedetails/**",
+        "/newprediction",
+        "/actuator/health",
+        "/css/**",
+        "/js/**",
+        "/images/**",
+        "/webjars/**",
+        "/favicon.ico");
   }
 
   @Override

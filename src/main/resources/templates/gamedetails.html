@@ -1,9 +1,10 @@
 {{> header}}
-<div class="row">
-    <div class="col-sm-12">
-        <h3>{{teamName}}</h3>
+<div class="aggie-content-wrapper">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="h3 aggie-section-title text-aggie">{{teamName}}</h1>
+        </div>
     </div>
-</div>
 {{#actualScore}}
 <div class="row">
     <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
@@ -11,7 +12,7 @@
     </div>
     <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
         <div class="progress">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
+            <div class="progress-bar bg-actual" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
                 {{prediction}}
             </div>
         </div>
@@ -25,8 +26,8 @@
     </div>
     {{^score}}
     <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
-        <div class="progress" >
-            <div class="progress-bar" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
+        <div class="progress">
+            <div class="progress-bar bg-aggie" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
                 {{prediction}}
             </div>
         </div>
@@ -35,8 +36,8 @@
     {{#score}}
     {{^bonus}}
     <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
-        <div class="progress" >
-            <div class="progress-bar" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
+        <div class="progress">
+            <div class="progress-bar bg-aggie" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
                 {{prediction}} (+{{score}})
             </div>
         </div>
@@ -44,8 +45,8 @@
     {{/bonus}}
     {{#bonus}}
     <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
-        <div class="progress" >
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
+        <div class="progress">
+            <div class="progress-bar bg-aggie progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{percentOfMax}}%" aria-valuenow="{{prediction}}" aria-valuemin="0" aria-valuemax="{{maxPrediction}}">
                 {{prediction}} ({{amount}} BONUS)
             </div>
         </div>
@@ -61,4 +62,5 @@
     </div>
 </div>
 {{/gameDetailsRows}}
+</div>
 {{> footer}}
