@@ -3,6 +3,7 @@ import type { AppEnv, SyncedGame } from "./types";
 
 const TEXAS_AM_TEAM_ID = "245";
 const PROVIDER = "espn";
+const USER_AGENT = "gigem/1.0 (+https://github.com/aaronlindsey/gigem)";
 
 export interface ScheduleProvider {
   getGames(season: number): Promise<SyncedGame[]>;
@@ -89,7 +90,7 @@ export class EspnScheduleProvider implements ScheduleProvider {
     );
     url.searchParams.set("season", String(season));
     const response = await fetch(url, {
-      headers: { Accept: "application/json", "User-Agent": "gigem/1.0" },
+      headers: { Accept: "application/json", "User-Agent": USER_AGENT },
       signal: AbortSignal.timeout(15_000),
     });
     if (!response.ok) {

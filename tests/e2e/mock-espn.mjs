@@ -45,7 +45,14 @@ const payload = {
   ],
 };
 
-const server = http.createServer((_request, response) => {
+const server = http.createServer((request, response) => {
+  const userAgent = request.headers["user-agent"];
+  if (userAgent !== "gigem/1.0 (+https://github.com/aaronlindsey/gigem)") {
+    response.writeHead(403, { "Content-Type": "text/plain" });
+    response.end("Rejected User-Agent");
+    return;
+  }
+
   response.writeHead(200, { "Content-Type": "application/json" });
   response.end(JSON.stringify(payload));
 });
