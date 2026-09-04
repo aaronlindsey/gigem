@@ -10,13 +10,15 @@ INSERT INTO players (id, name, email) VALUES
   ('bob', 'Bob', 'bob@example.com'),
   ('carol', 'Carol', 'carol@example.com');
 
-INSERT INTO games (id, opponent, starts_at, actual_score) VALUES
-  ('game-1', 'Far Off State', unixepoch() - 400000, 40),
-  ('game-2', 'Best Pick Tech', unixepoch() - 300000, 30),
-  ('game-3', 'Bonus University', unixepoch() - 200000, 21),
-  ('game-started', 'Locked College', unixepoch() - 1000, NULL),
-  ('game-tbd', 'TBD State', unixepoch() - 1000, NULL),
-  ('game-future', 'Future State', unixepoch() + 400000, NULL);
+INSERT INTO games
+  (id, opponent, opponent_abbreviation, venue, site, starts_at, actual_score)
+VALUES
+  ('game-1', 'Far Off State', 'FOS', 'Kyle Field', 'home', unixepoch() - 400000, 40),
+  ('game-2', 'Best Pick Tech', 'BPT', 'Tech Stadium', 'away', unixepoch() - 300000, 30),
+  ('game-3', 'Bonus University', 'BU', 'Kyle Field', 'home', unixepoch() - 200000, 21),
+  ('game-started', 'Locked College', 'LC', 'Kyle Field', 'home', unixepoch() - 1000, NULL),
+  ('game-tbd', 'TBD State', 'TBD', 'Kyle Field', 'home', unixepoch() - 1000, NULL),
+  ('game-future', 'Future State', 'FS', 'Future Stadium', 'away', unixepoch() + 400000, NULL);
 
 UPDATE games SET kickoff_time_tbd = 1 WHERE id = 'game-tbd';
 

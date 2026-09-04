@@ -2,7 +2,7 @@ import { requirePlayer } from "../auth";
 import { getAllGameData, upsertPlayerPredictionBeforeKickoff } from "../db";
 import { ValidationError } from "../errors";
 import { htmlResponse, redirect } from "../http";
-import { calculateScores } from "../scoring";
+import { calculateScores, sortStandings } from "../scoring";
 import type { AppEnv } from "../types";
 import { assertSameOrigin, playerPrediction } from "../validation";
 import { playerScoresPage } from "../views/player";
@@ -10,10 +10,10 @@ import { playerScoresPage } from "../views/player";
 export async function showPlayerScores(request: Request, env: AppEnv): Promise<Response> {
   const player = await requirePlayer(request, env);
   const { players, games, predictions } = await getAllGameData(env.DB);
-  const score = calculateScores(players, games, predictions).find(
-    (candidate) => candidate.player.id === player.id,
-  );
+  const scores = calculateScores(players, games, predictions);
+  const score = scores.find((candidate) => candidate.player.id === player.id);
   if (!score) throw new Error("Authenticated player disappeared from the roster.");
+  const rank = sortStandings(scores).findIndex((candidate) => candidate.player.id === player.id) + 1;
   const url = new URL(request.url);
   const isAdmin = Boolean(env.ADMIN_EMAIL && player.email === env.ADMIN_EMAIL.trim().toLowerCase());
   return htmlResponse(
@@ -23,6 +23,7 @@ export async function showPlayerScores(request: Request, env: AppEnv): Promise<R
       Math.floor(Date.now() / 1000),
       url.searchParams.get("status"),
       isAdmin,
+      rank,
     ),
   );
 }

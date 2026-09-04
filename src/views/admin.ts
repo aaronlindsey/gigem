@@ -1,5 +1,5 @@
 import type { Game, Player, Prediction, SyncStatus } from "../types";
-import { escapeHtml, formatGameDateUtc, layout, localDate, localGameDate, notice, utcInput } from "./common";
+import { escapeHtml, formatGameDateUtc, gameLabel, layout, localDate, localGameDate, notice, utcInput } from "./common";
 
 const notices: Record<string, string> = {
   "game-created": "Game added.",
@@ -16,6 +16,19 @@ function gameFields(game?: Game): string {
   return `<div class="form-grid">
     <label>Opponent
       <input name="opponent" maxlength="120" value="${escapeHtml(game?.opponent ?? "")}" required>
+    </label>
+    <label>Abbreviation
+      <input name="opponent_abbreviation" maxlength="10" value="${escapeHtml(game?.opponent_abbreviation ?? "")}" placeholder="AUB">
+    </label>
+    <label>Venue
+      <input name="venue" maxlength="120" value="${escapeHtml(game?.venue ?? "")}" placeholder="Kyle Field">
+    </label>
+    <label>Site
+      <select name="site" required>
+        <option value="home" ${!game || game.site === "home" ? "selected" : ""}>Home</option>
+        <option value="away" ${game?.site === "away" ? "selected" : ""}>Away</option>
+        <option value="neutral" ${game?.site === "neutral" ? "selected" : ""}>Neutral</option>
+      </select>
     </label>
     <label>Start time (<span data-time-zone-label>UTC</span>)
       <input name="starts_at" type="datetime-local" value="${game ? utcInput(game.starts_at) : ""}" ${game ? `data-utc-datetime="${new Date(game.starts_at * 1000).toISOString()}"` : ""} data-local-datetime required>
@@ -42,7 +55,7 @@ function playerOptions(players: Player[], selected = ""): string {
 
 function gameOptions(games: Game[], selected = ""): string {
   return games.map((game) =>
-    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""} data-local-option data-opponent="${escapeHtml(game.opponent)}" data-starts-at="${new Date(game.starts_at * 1000).toISOString()}" ${game.kickoff_time_tbd ? "data-date-only" : ""}>${escapeHtml(game.opponent)} — ${escapeHtml(formatGameDateUtc(game))}</option>`,
+    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""} data-local-option data-opponent="${escapeHtml(gameLabel(game))}" data-starts-at="${new Date(game.starts_at * 1000).toISOString()}" ${game.kickoff_time_tbd ? "data-date-only" : ""}>${escapeHtml(gameLabel(game))} — ${escapeHtml(formatGameDateUtc(game))}</option>`,
   ).join("");
 }
 
@@ -63,7 +76,7 @@ export function adminPage(
 
   const gamesMarkup = games.map((game) => `<details class="admin-card">
     <summary>
-      <span><strong>vs. ${escapeHtml(game.opponent)}</strong><small>${localGameDate(game)}</small></span>
+      <span><strong>${escapeHtml(gameLabel(game))}</strong><small>${localGameDate(game)}${game.venue ? ` · ${escapeHtml(game.venue)}` : ""}</small></span>
       <span>${game.actual_score === null ? "Scheduled" : `Final: ${game.actual_score}`}${game.external_id ? " · ESPN" : ""}</span>
     </summary>
     <form method="post" action="/admin/games/${encodeURIComponent(game.id)}">
@@ -97,7 +110,7 @@ export function adminPage(
     const game = gameById.get(prediction.game_id);
     if (!player || !game) return "";
     return `<div class="admin-card prediction-admin-row">
-      <div><strong>${escapeHtml(player.name)}</strong><small>vs. ${escapeHtml(game.opponent)}</small></div>
+      <div><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(gameLabel(game))}</small></div>
       <form method="post" action="/admin/predictions">
         <input type="hidden" name="player_id" value="${escapeHtml(player.id)}">
         <input type="hidden" name="game_id" value="${escapeHtml(game.id)}">
@@ -114,8 +127,8 @@ export function adminPage(
   }).join("");
 
   const body = `
-    <section class="hero compact">
-      <p class="eyebrow">Head yell leader controls</p>
+    <section class="admin-heading">
+      <span>Head yell leader controls</span>
       <h1>Admin</h1>
       <p>Manage the roster, schedule, finals, and every prediction.</p>
     </section>
@@ -168,5 +181,5 @@ export function adminPage(
       <form method="post" action="/admin/sync"><button class="button" type="submit">Sync now</button></form>
     </section>`;
 
-  return layout({ title: "Admin", body, authenticatedEmail: email, admin: true });
+  return layout({ title: "Admin", body, authenticatedEmail: email, admin: true, active: "admin" });
 }

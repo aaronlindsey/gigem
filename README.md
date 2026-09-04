@@ -161,6 +161,7 @@ The application does not store passwords, OTPs, or sessions.
 Visit `/admin` after Access is configured. The dashboard can:
 
 - Add, edit, and delete players and games
+- Set game venues, home/away/neutral sites, and opponent abbreviations
 - Set or clear Aggie final scores
 - Add, replace, or delete any prediction, even after kickoff
 - Run the ESPN sync and inspect its last status
@@ -187,7 +188,8 @@ https://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/24
 For each valid event it:
 
 - adds a missing game using ESPN's event ID;
-- updates opponent names and pre-kickoff start times;
+- updates opponent names, abbreviations, venues, home/away sites, and
+  pre-kickoff start times;
 - marks kickoff times as TBD when ESPN reports `timeValid: false`, keeping picks
   open until ESPN publishes a time;
 - imports the Aggie score only when ESPN marks the event completed;

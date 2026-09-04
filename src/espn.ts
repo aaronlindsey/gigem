@@ -53,6 +53,14 @@ export function parseEspnSchedule(payload: unknown): SyncedGame[] {
     const opponent = competitors.find((candidate) => competitorTeamId(candidate) !== TEXAS_AM_TEAM_ID);
     const opponentTeam = object(object(opponent)?.team);
     const opponentName = text(opponentTeam?.shortDisplayName) ?? text(opponentTeam?.displayName);
+    const opponentAbbreviation = text(opponentTeam?.abbreviation)?.slice(0, 10) ?? null;
+    const venue = text(object(competition.venue)?.fullName)?.slice(0, 120) ?? null;
+    const aggieHomeAway = text(object(aggies)?.homeAway);
+    const site = competition.neutralSite === true
+      ? "neutral"
+      : aggieHomeAway === "away"
+        ? "away"
+        : "home";
     const date = text(competition.date) ?? text(event.date);
     const startsAtMilliseconds = date ? Date.parse(date) : Number.NaN;
 
@@ -70,6 +78,9 @@ export function parseEspnSchedule(payload: unknown): SyncedGame[] {
     games.push({
       externalId,
       opponent: opponentName.slice(0, 120),
+      opponentAbbreviation,
+      venue,
+      site,
       startsAt: Math.floor(startsAtMilliseconds / 1000),
       kickoffTimeTbd,
       actualScore,

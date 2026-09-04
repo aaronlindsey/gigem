@@ -47,7 +47,7 @@ async function handleRequest(request: Request, env: AppEnv): Promise<Response> {
   if (method === "GET" && pathname === "/admin") return showAdmin(request, env);
 
   const gameDetailsId = match(pathname, /^\/games\/([^/]+)$/);
-  if (method === "GET" && gameDetailsId) return showGameDetails(env, gameDetailsId);
+  if (method === "GET" && gameDetailsId) return showGameDetails(request, env, gameDetailsId);
 
   const playerPredictionGameId = match(pathname, /^\/scores\/predictions\/([^/]+)$/);
   if (method === "POST" && playerPredictionGameId) {

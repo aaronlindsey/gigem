@@ -9,13 +9,16 @@ const payload = {
         {
           date: "2099-09-01T04:00:00Z",
           timeValid: false,
+          venue: { fullName: "Mock Stadium" },
           competitors: [
             {
-              team: { id: "245", shortDisplayName: "Texas A&M" },
+              homeAway: "away",
+              team: { id: "245", shortDisplayName: "Texas A&M", abbreviation: "TAMU" },
               score: { value: 0, displayValue: "0" },
             },
             {
-              team: { id: "999", shortDisplayName: "Mock University" },
+              homeAway: "home",
+              team: { id: "999", shortDisplayName: "Mock University", abbreviation: "MU" },
               score: { value: 0, displayValue: "0" },
             },
           ],
@@ -30,13 +33,16 @@ const payload = {
         {
           date: "2020-09-01T23:00:00Z",
           timeValid: true,
+          venue: { fullName: "Kyle Field" },
           competitors: [
             {
-              team: { id: "245", shortDisplayName: "Texas A&M" },
+              homeAway: "home",
+              team: { id: "245", shortDisplayName: "Texas A&M", abbreviation: "TAMU" },
               score: { value: 42, displayValue: "42" },
             },
             {
-              team: { id: "998", shortDisplayName: "Final State" },
+              homeAway: "away",
+              team: { id: "998", shortDisplayName: "Final State", abbreviation: "FS" },
               score: { value: 17, displayValue: "17" },
             },
           ],

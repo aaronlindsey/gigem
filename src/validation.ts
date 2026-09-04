@@ -12,6 +12,32 @@ export function requiredText(form: FormData, name: string, maxLength: number): s
   return trimmed;
 }
 
+export function optionalText(form: FormData, name: string, maxLength: number): string | null {
+  const value = form.get(name);
+  if (value === null || value === "") return null;
+  if (typeof value !== "string") {
+    throw new ValidationError(`${name.replaceAll("_", " ")} is invalid.`);
+  }
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  if (trimmed.length > maxLength) {
+    throw new ValidationError(`${name.replaceAll("_", " ")} is too long.`);
+  }
+  return trimmed;
+}
+
+export function oneOf<T extends string>(
+  form: FormData,
+  name: string,
+  choices: readonly T[],
+): T {
+  const value = requiredText(form, name, 30);
+  if (!choices.includes(value as T)) {
+    throw new ValidationError(`${name.replaceAll("_", " ")} is invalid.`);
+  }
+  return value as T;
+}
+
 export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
 }

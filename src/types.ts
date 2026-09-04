@@ -18,9 +18,14 @@ export interface Player {
   updated_at: number;
 }
 
+export type GameSite = "home" | "away" | "neutral";
+
 export interface Game {
   id: string;
   opponent: string;
+  opponent_abbreviation: string | null;
+  venue: string | null;
+  site: GameSite;
   starts_at: number;
   kickoff_time_tbd: number;
   actual_score: number | null;
@@ -51,6 +56,9 @@ export interface SyncStatus {
 export interface SyncedGame {
   externalId: string;
   opponent: string;
+  opponentAbbreviation: string | null;
+  venue: string | null;
+  site: GameSite;
   startsAt: number;
   kickoffTimeTbd: boolean;
   actualScore: number | null;

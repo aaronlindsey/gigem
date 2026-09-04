@@ -33,6 +33,7 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await expect(playerPage.getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
 
   await playerPage.goto("/scores");
+  await expect(playerPage.getByRole("heading", { name: "Howdy, Alice!" })).toBeVisible();
   await expect(playerPage.locator("[data-testid=player-total]")).toHaveText("25");
   await expect(playerPage.locator("[data-testid=score-game-game-2]")).toContainText("Dropped");
   await expect(playerPage.locator("[data-testid=score-game-game-2] s")).toHaveText("+20");
@@ -40,6 +41,12 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
 
   const futureInput = playerPage.locator("#prediction-game-future");
   await expect(futureInput).toHaveValue("33");
+  const futureForm = futureInput.locator("xpath=ancestor::form");
+  const increment = futureForm.getByRole("button", { name: "Increase prediction" });
+  await increment.click();
+  await increment.click();
+  await increment.click();
+  await expect(futureInput).toHaveValue("36");
   await futureInput.fill("44");
   await futureInput.locator("xpath=ancestor::form").getByRole("button", { name: "Save" }).click();
   await expect(playerPage.getByText("Prediction saved. Good bull!")).toBeVisible();
@@ -77,9 +84,22 @@ test("displays times in the browser time zone", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/games/game-future");
 
-  const kickoff = page.locator("time[data-local-date-time]");
-  await expect(kickoff).toHaveText(/P[DS]T/);
-  await expect(kickoff).not.toHaveText(/C[DS]T/);
+  const kickoff = page.locator("time[data-compact-game-date]");
+  const expected = await kickoff.evaluate((element) => {
+    const date = new Date((element as HTMLTimeElement).dateTime);
+    const dateText = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    }).format(date);
+    const timeText = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(date);
+    return `${dateText} · ${timeText}`;
+  });
+  await expect(kickoff).toHaveText(expected);
+  await expect(kickoff).toHaveAttribute("title", /P[DS]T/);
 
   await context.close();
 });
@@ -92,7 +112,9 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   await unknownPage.goto("/scores");
   await expect(unknownPage.getByText("not on the player roster")).toBeVisible();
   await unknownPage.goto("/admin");
+  await expect(unknownPage.getByRole("heading", { name: "Bad bull!" })).toBeVisible();
   await expect(unknownPage.getByText("reserved for the game administrator")).toBeVisible();
+  await expect(unknownPage.getByRole("link", { name: "Return to the leaderboard" })).toBeVisible();
   await unknownContext.close();
 
   const adminContext = await browser.newContext({
@@ -119,6 +141,9 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   await expect(tbdGame).toHaveCount(1);
   await expect(tbdGame).toContainText("Time TBD");
   await expect(tbdGame.locator('input[name="kickoff_time_tbd"]')).toBeChecked();
+  await expect(tbdGame.locator('select[name="site"]')).toHaveValue("away");
+  await expect(tbdGame.locator('input[name="venue"]')).toHaveValue("Mock Stadium");
+  await expect(tbdGame.locator('input[name="opponent_abbreviation"]')).toHaveValue("MU");
   await expect(adminPage.locator("#games > details.admin-card", { hasText: "Final State" })).toContainText("Final: 42");
 
   await adminPage.getByRole("button", { name: "Sync now" }).click();
