@@ -1,0 +1,32 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "gigem-v2",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-01",
+	"workers_dev": true,
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS",
+		"run_worker_first": [
+			"/*"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "gigem",
+			"migrations_dir": "migrations"
+		}
+	],
+	"vars": {
+		"ENVIRONMENT": "production",
+		"ACCESS_TEAM_DOMAIN": "replace-me.cloudflareaccess.com",
+		"ACCESS_AUD": "replace-with-access-audience",
+		"ESPN_API_BASE_URL": "https://site.api.espn.com"
+	},
+	"triggers": {
+		"crons": [
+			"17 */6 * * *"
+		]
+	}
+}

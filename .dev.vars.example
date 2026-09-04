@@ -1,0 +1,10 @@
+# Copy to .dev.vars for local development. Never commit real values.
+ENVIRONMENT="development"
+ACCESS_TEAM_DOMAIN="your-team.cloudflareaccess.com"
+ACCESS_AUD="your-access-application-audience-tag"
+ADMIN_EMAIL="admin@example.com"
+# Local development only. Production ignores this value and always requires Access.
+LOCAL_AUTH_EMAIL="player@example.com"
+ESPN_API_BASE_URL="https://site.api.espn.com"
+# Optional; defaults to the current football season (January uses the previous year).
+# ESPN_SEASON="2026"
