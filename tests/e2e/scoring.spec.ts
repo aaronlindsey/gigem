@@ -28,6 +28,10 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
     extraHTTPHeaders: { "x-local-auth-email": "alice@example.com" },
   });
   const playerPage = await playerContext.newPage();
+  await playerPage.goto("/");
+  await expect(playerPage.locator(".nav-identity")).toHaveText("alice@example.com");
+  await expect(playerPage.getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
+
   await playerPage.goto("/scores");
   await expect(playerPage.locator("[data-testid=player-total]")).toHaveText("25");
   await expect(playerPage.locator("[data-testid=score-game-game-2]")).toContainText("Dropped");
@@ -83,6 +87,10 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
     extraHTTPHeaders: { "x-local-auth-email": "admin@example.com" },
   });
   const adminPage = await adminContext.newPage();
+  await adminPage.goto("/");
+  await expect(adminPage.locator(".nav-identity")).toHaveText("admin@example.com");
+  await expect(adminPage.getByRole("link", { name: "Admin", exact: true })).toBeVisible();
+
   await adminPage.goto("/admin");
   await adminPage.getByRole("button", { name: "Sync now" }).click();
   await expect(adminPage.getByText(/sync complete: 2 seen, 2 written/)).toBeVisible();

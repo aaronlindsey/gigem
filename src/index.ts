@@ -42,7 +42,7 @@ async function handleRequest(request: Request, env: AppEnv): Promise<Response> {
   if (method === "GET" && pathname === "/health") {
     return jsonResponse({ status: "ok" });
   }
-  if (method === "GET" && pathname === "/") return showScoreboard(env);
+  if (method === "GET" && pathname === "/") return showScoreboard(request, env);
   if (method === "GET" && pathname === "/scores") return showPlayerScores(request, env);
   if (method === "GET" && pathname === "/admin") return showAdmin(request, env);
 

@@ -2,7 +2,12 @@ import type { Game, Player, Prediction } from "../types";
 import type { PlayerScore } from "../scoring";
 import { emptyState, escapeHtml, formatGameDate, layout, scoreText } from "./common";
 
-export function scoreboardPage(standings: PlayerScore[], games: Game[]): string {
+export function scoreboardPage(
+  standings: PlayerScore[],
+  games: Game[],
+  authenticatedEmail: string | null,
+  isAdmin: boolean,
+): string {
   const standingsMarkup = standings.length === 0
     ? emptyState("The stands are quiet", "No players have joined the roster yet.")
     : `<ol class="standings" data-testid="standings">
@@ -28,6 +33,8 @@ export function scoreboardPage(standings: PlayerScore[], games: Game[]): string 
 
   return layout({
     title: "Scoreboard",
+    authenticatedEmail: authenticatedEmail ?? undefined,
+    admin: isAdmin,
     body: `
       <section class="hero">
         <p class="eyebrow">Fightin' Texas Aggie Football</p>

@@ -142,11 +142,15 @@ In Zero Trust:
 5. Ensure the protected paths include their POST subpaths. Keep `/`, `/games/*`,
    `/health`, and static assets outside Access so public pages remain public.
 
-The Worker validates the `Cf-Access-Jwt-Assertion` signature against the team's
-published JWKs and checks issuer, audience, and expiration. It then looks up the
-JWT email in D1. The admin route additionally compares it with the
-`ADMIN_EMAIL` secret. Adding or deleting a player in Admin therefore grants or
-revokes application access immediately; no player token or secret URL exists.
+The Worker validates the `Cf-Access-Jwt-Assertion` header (or the
+`CF_Authorization` cookie on the public scoreboard) against the team's published
+JWKs and checks issuer, audience, and expiration. The scoreboard uses a valid
+existing session to show the account email and an Admin link for the configured
+administrator, but remains public when no valid session is present. Protected
+player routes then look up the JWT email in D1. The admin route additionally
+compares it with the `ADMIN_EMAIL` secret. Adding or deleting a player in Admin
+therefore grants or revokes application access immediately; no player token or
+secret URL exists.
 
 Cloudflare Access handles sending the email code and its authorization cookie.
 The application does not store passwords, OTPs, or sessions.
