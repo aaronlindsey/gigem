@@ -1,6 +1,6 @@
 {
-  "name": "gigem-v2",
-  "version": "2.0.0",
+  "name": "gigem",
+  "version": "1.0.0",
   "private": true,
   "description": "Texas A&M football score prediction game on Cloudflare Workers",
   "scripts": {

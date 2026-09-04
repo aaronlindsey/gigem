@@ -89,7 +89,7 @@ export class EspnScheduleProvider implements ScheduleProvider {
     );
     url.searchParams.set("season", String(season));
     const response = await fetch(url, {
-      headers: { Accept: "application/json", "User-Agent": "gigem-v2/2.0" },
+      headers: { Accept: "application/json", "User-Agent": "gigem/1.0" },
       signal: AbortSignal.timeout(15_000),
     });
     if (!response.ok) {
