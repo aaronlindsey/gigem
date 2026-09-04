@@ -67,8 +67,9 @@ npm run db:seed:local      # load disposable demo data
 npm run dev                # run Worker and D1 locally
 ```
 
-Admin game start inputs are explicitly UTC. Public pages display times in US
-Central time, including the `CST`/`CDT` label.
+Game and sync times are stored in UTC and displayed in each visitor's browser
+time zone, including its short time-zone label. Admin game start inputs also use
+the administrator's browser time zone and are converted to UTC when submitted.
 
 ## E2E tests
 

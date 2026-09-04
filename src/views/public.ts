@@ -1,6 +1,6 @@
 import type { Game, Player, Prediction } from "../types";
 import type { PlayerScore } from "../scoring";
-import { emptyState, escapeHtml, formatGameDate, layout, scoreText } from "./common";
+import { emptyState, escapeHtml, layout, localGameDate, scoreText } from "./common";
 
 export function scoreboardPage(
   standings: PlayerScore[],
@@ -26,7 +26,7 @@ export function scoreboardPage(
           <a class="game-card" href="/games/${encodeURIComponent(game.id)}">
             <span class="eyebrow">${game.actual_score === null ? (!game.kickoff_time_tbd && game.starts_at * 1000 <= Date.now() ? "Underway" : "Upcoming") : "Final"}</span>
             <strong>vs. ${escapeHtml(game.opponent)}</strong>
-            <span>${escapeHtml(formatGameDate(game))}</span>
+            <span>${localGameDate(game)}</span>
             ${game.actual_score === null ? "" : `<span class="actual-pill">Aggies ${game.actual_score}</span>`}
           </a>`).join("")}
        </div>`;
@@ -111,7 +111,7 @@ export function gameDetailsPage(
       <section class="hero compact">
         <p class="eyebrow">${game.actual_score === null ? (started ? "Game in progress" : "Upcoming game") : "Final"}</p>
         <h1>Texas A&amp;M vs. ${escapeHtml(game.opponent)}</h1>
-        <p>${escapeHtml(formatGameDate(game))}</p>
+        <p>${localGameDate(game)}</p>
         ${game.actual_score === null ? "" : `<div class="final-score"><span>Aggies</span><strong>${game.actual_score}</strong></div>`}
       </section>
       <section class="panel">

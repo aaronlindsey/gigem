@@ -9,30 +9,36 @@ export function escapeHtml(value: unknown): string {
     .replaceAll("'", "&#39;");
 }
 
-export function formatDate(timestamp: number | null): string {
-  if (timestamp === null) return "Never";
+function formatUtcDate(timestamp: number, dateOnly = false): string {
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Chicago",
+    timeZone: "UTC",
     weekday: "short",
     month: "short",
     day: "numeric",
     year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
+    ...(dateOnly ? {} : {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }),
   }).format(new Date(timestamp * 1000));
 }
 
-export function formatGameDate(game: Game): string {
-  if (!game.kickoff_time_tbd) return formatDate(game.starts_at);
-  const date = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/New_York",
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(game.starts_at * 1000));
-  return `${date} · Time TBD`;
+export function localDate(timestamp: number | null, dateOnly = false): string {
+  if (timestamp === null) return "Never";
+  const iso = new Date(timestamp * 1000).toISOString();
+  const attribute = dateOnly ? "data-local-date" : "data-local-date-time";
+  return `<time datetime="${iso}" ${attribute}>${escapeHtml(formatUtcDate(timestamp, dateOnly))}</time>`;
+}
+
+export function localGameDate(game: Game): string {
+  const date = localDate(game.starts_at, Boolean(game.kickoff_time_tbd));
+  return game.kickoff_time_tbd ? `${date} · Time TBD` : date;
+}
+
+export function formatGameDateUtc(game: Game): string {
+  const date = formatUtcDate(game.starts_at, Boolean(game.kickoff_time_tbd));
+  return game.kickoff_time_tbd ? `${date} · Time TBD` : date;
 }
 
 export function utcInput(timestamp: number): string {

@@ -1,5 +1,5 @@
 import type { Game, Player, Prediction, SyncStatus } from "../types";
-import { escapeHtml, formatDate, formatGameDate, layout, notice, utcInput } from "./common";
+import { escapeHtml, formatGameDateUtc, layout, localDate, localGameDate, notice, utcInput } from "./common";
 
 const notices: Record<string, string> = {
   "game-created": "Game added.",
@@ -17,8 +17,8 @@ function gameFields(game?: Game): string {
     <label>Opponent
       <input name="opponent" maxlength="120" value="${escapeHtml(game?.opponent ?? "")}" required>
     </label>
-    <label>Start time (UTC)
-      <input name="starts_at" type="datetime-local" value="${game ? utcInput(game.starts_at) : ""}" required>
+    <label>Start time (<span data-time-zone-label>UTC</span>)
+      <input name="starts_at" type="datetime-local" value="${game ? utcInput(game.starts_at) : ""}" ${game ? `data-utc-datetime="${new Date(game.starts_at * 1000).toISOString()}"` : ""} data-local-datetime required>
     </label>
     <label>Aggie final score
       <input name="actual_score" type="number" min="0" max="999" inputmode="numeric" value="${game?.actual_score ?? ""}" placeholder="Not final">
@@ -42,7 +42,7 @@ function playerOptions(players: Player[], selected = ""): string {
 
 function gameOptions(games: Game[], selected = ""): string {
   return games.map((game) =>
-    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""}>${escapeHtml(game.opponent)} — ${escapeHtml(formatGameDate(game))}</option>`,
+    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""} data-local-option data-opponent="${escapeHtml(game.opponent)}" data-starts-at="${new Date(game.starts_at * 1000).toISOString()}" ${game.kickoff_time_tbd ? "data-date-only" : ""}>${escapeHtml(game.opponent)} — ${escapeHtml(formatGameDateUtc(game))}</option>`,
   ).join("");
 }
 
@@ -63,7 +63,7 @@ export function adminPage(
 
   const gamesMarkup = games.map((game) => `<details class="admin-card">
     <summary>
-      <span><strong>vs. ${escapeHtml(game.opponent)}</strong><small>${escapeHtml(formatGameDate(game))}</small></span>
+      <span><strong>vs. ${escapeHtml(game.opponent)}</strong><small>${localGameDate(game)}</small></span>
       <span>${game.actual_score === null ? "Scheduled" : `Final: ${game.actual_score}`}${game.external_id ? " · ESPN" : ""}</span>
     </summary>
     <form method="post" action="/admin/games/${encodeURIComponent(game.id)}">
@@ -159,8 +159,8 @@ export function adminPage(
     <section id="sync" class="admin-section panel">
       <div class="section-heading"><h2>ESPN schedule sync</h2><span>${sync.last_error ? "Needs attention" : "Ready"}</span></div>
       <dl class="sync-stats">
-        <div><dt>Last attempt</dt><dd>${escapeHtml(formatDate(sync.last_attempt_at))}</dd></div>
-        <div><dt>Last success</dt><dd>${escapeHtml(formatDate(sync.last_success_at))}</dd></div>
+        <div><dt>Last attempt</dt><dd>${localDate(sync.last_attempt_at)}</dd></div>
+        <div><dt>Last success</dt><dd>${localDate(sync.last_success_at)}</dd></div>
         <div><dt>Last result</dt><dd>${sync.records_seen} seen / ${sync.records_changed} written</dd></div>
       </dl>
       ${sync.last_error ? notice(sync.last_error, "error") : ""}

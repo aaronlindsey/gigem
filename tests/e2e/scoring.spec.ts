@@ -72,6 +72,18 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await playerContext.close();
 });
 
+test("displays times in the browser time zone", async ({ browser }) => {
+  const context = await browser.newContext({ timezoneId: "America/Los_Angeles" });
+  const page = await context.newPage();
+  await page.goto("/games/game-future");
+
+  const kickoff = page.locator("time[data-local-date-time]");
+  await expect(kickoff).toHaveText(/P[DS]T/);
+  await expect(kickoff).not.toHaveText(/C[DS]T/);
+
+  await context.close();
+});
+
 test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   const unknownContext = await browser.newContext({
     extraHTTPHeaders: { "x-local-auth-email": "stranger@example.com" },
@@ -85,6 +97,7 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
 
   const adminContext = await browser.newContext({
     extraHTTPHeaders: { "x-local-auth-email": "admin@example.com" },
+    timezoneId: "America/Los_Angeles",
   });
   const adminPage = await adminContext.newPage();
   await adminPage.goto("/");
@@ -92,6 +105,14 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   await expect(adminPage.getByRole("link", { name: "Admin", exact: true })).toBeVisible();
 
   await adminPage.goto("/admin");
+  const futureGame = adminPage.locator("#games > details.admin-card", { hasText: "Future State" });
+  await futureGame.locator("summary").click();
+  const gameForm = futureGame.locator("form").first();
+  const localStartInput = gameForm.locator('input[name="starts_at_local"]');
+  const utcStartInput = gameForm.locator('input[name="starts_at"]');
+  await localStartInput.fill("2030-09-01T12:00");
+  await expect(utcStartInput).toHaveValue("2030-09-01T19:00:00.000Z");
+
   await adminPage.getByRole("button", { name: "Sync now" }).click();
   await expect(adminPage.getByText(/sync complete: 2 seen, 2 written/)).toBeVisible();
   const tbdGame = adminPage.locator("#games > details.admin-card", { hasText: "Mock University" });

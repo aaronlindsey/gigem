@@ -1,5 +1,5 @@
 import type { PlayerScore } from "../scoring";
-import { escapeHtml, formatGameDate, layout, notice, scoreText } from "./common";
+import { escapeHtml, layout, localGameDate, notice, scoreText } from "./common";
 
 const statusMessages: Record<string, { text: string; kind: "success" | "error" }> = {
   saved: { text: "Prediction saved. Good bull!", kind: "success" },
@@ -45,9 +45,7 @@ export function playerScoresPage(
       <div class="game-cell">
         <span class="eyebrow">${editable ? "Open" : "Locked"}</span>
         <h3><a href="/games/${encodeURIComponent(gameScore.game.id)}">vs. ${escapeHtml(gameScore.game.opponent)}</a></h3>
-        ${gameScore.game.kickoff_time_tbd
-          ? `<span>${escapeHtml(formatGameDate(gameScore.game))}</span>`
-          : `<time datetime="${new Date(gameScore.game.starts_at * 1000).toISOString()}">${escapeHtml(formatGameDate(gameScore.game))}</time>`}
+        <span>${localGameDate(gameScore.game)}</span>
       </div>
       <div class="score-cell"><span class="cell-label">Your prediction</span>${prediction}</div>
       <div class="score-cell"><span class="cell-label">Actual</span><strong>${gameScore.game.actual_score ?? "—"}</strong></div>
