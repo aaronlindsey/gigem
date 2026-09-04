@@ -109,21 +109,26 @@ export function adminPage(
     const player = playerById.get(prediction.player_id);
     const game = gameById.get(prediction.game_id);
     if (!player || !game) return "";
-    return `<div class="admin-card prediction-admin-row">
-      <div><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(gameLabel(game))}</small></div>
-      <form method="post" action="/admin/predictions">
-        <input type="hidden" name="player_id" value="${escapeHtml(player.id)}">
-        <input type="hidden" name="game_id" value="${escapeHtml(game.id)}">
-        <label class="sr-only" for="admin-pred-${escapeHtml(player.id)}-${escapeHtml(game.id)}">Prediction</label>
-        <input id="admin-pred-${escapeHtml(player.id)}-${escapeHtml(game.id)}" name="predicted_score" type="number" min="0" max="999" value="${prediction.predicted_score}" required>
-        <button class="button small" type="submit">Save</button>
-      </form>
-      <form method="post" action="/admin/predictions/delete" data-confirm="Delete this prediction? It will be treated as a missing pick.">
-        <input type="hidden" name="player_id" value="${escapeHtml(player.id)}">
-        <input type="hidden" name="game_id" value="${escapeHtml(game.id)}">
-        <button class="icon-button danger-text" type="submit" aria-label="Delete ${escapeHtml(player.name)} prediction against ${escapeHtml(game.opponent)}">Delete</button>
-      </form>
-    </div>`;
+    return `<details class="admin-card prediction-admin-row">
+      <summary>
+        <span><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(gameLabel(game))}</small></span>
+        <span>View / edit</span>
+      </summary>
+      <div class="prediction-admin-actions">
+        <form method="post" action="/admin/predictions">
+          <input type="hidden" name="player_id" value="${escapeHtml(player.id)}">
+          <input type="hidden" name="game_id" value="${escapeHtml(game.id)}">
+          <label for="admin-pred-${escapeHtml(player.id)}-${escapeHtml(game.id)}">Prediction</label>
+          <input id="admin-pred-${escapeHtml(player.id)}-${escapeHtml(game.id)}" name="predicted_score" type="number" min="0" max="999" value="${prediction.predicted_score}" required>
+          <button class="button small" type="submit">Save</button>
+        </form>
+        <form method="post" action="/admin/predictions/delete" data-confirm="Delete this prediction? It will be treated as a missing pick.">
+          <input type="hidden" name="player_id" value="${escapeHtml(player.id)}">
+          <input type="hidden" name="game_id" value="${escapeHtml(game.id)}">
+          <button class="icon-button danger-text" type="submit" aria-label="Delete ${escapeHtml(player.name)} prediction against ${escapeHtml(game.opponent)}">Delete</button>
+        </form>
+      </div>
+    </details>`;
   }).join("");
 
   const body = `

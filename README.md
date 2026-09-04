@@ -173,8 +173,9 @@ archive records.
 
 ## ESPN synchronization
 
-A cron trigger runs every six hours. During football season (July through
-January) each invocation fetches Texas A&M's current ESPN schedule. From
+A cron trigger runs every three minutes. During football season (July through
+January) each invocation fetches Texas A&M's current ESPN schedule so a newly
+final score normally reaches the leaderboard within a few minutes. From
 February through June, code skips all but one fetch on the first day of each
 month. January is associated with the previous season so postseason games stay
 attached to the correct schedule.
@@ -201,10 +202,12 @@ The dashboard's **Sync now** button uses the same path and records the last
 attempt, success, error, records seen, and records changed. Set an optional
 `ESPN_SEASON` Worker variable to force a season during unusual schedule windows.
 
-This ESPN endpoint is an undocumented site API with no compatibility or uptime
-SLA. The parser validates its input and a failure leaves existing D1 data alone,
-but manual administration remains the fallback if ESPN changes it. Review
-ESPN's current terms before production use.
+This ESPN endpoint is an undocumented site API with no published rate limit,
+compatibility guarantee, or uptime SLA. One request every three minutes (480 per
+day) is modest traffic, but ESPN could still throttle it without notice. The
+parser validates its input and a failure leaves existing D1 data alone, but
+manual administration remains the fallback if ESPN changes it. Review ESPN's
+current terms before production use.
 
 ## Security notes
 

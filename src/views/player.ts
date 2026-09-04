@@ -29,15 +29,9 @@ export function playerScoresPage(
   const editable = (gameScore: PlayerScore["games"][number]) =>
     gameScore.game.actual_score === null &&
     (Boolean(gameScore.game.kickoff_time_tbd) || gameScore.game.starts_at > now);
-  const displayedGames = [...score.games].sort((a, b) => {
-    const aEditable = editable(a);
-    const bEditable = editable(b);
-    if (aEditable !== bEditable) return aEditable ? -1 : 1;
-    if (aEditable && bEditable && Boolean(a.game.kickoff_time_tbd) !== Boolean(b.game.kickoff_time_tbd)) {
-      return a.game.kickoff_time_tbd ? 1 : -1;
-    }
-    return aEditable ? a.game.starts_at - b.game.starts_at : b.game.starts_at - a.game.starts_at;
-  });
+  const displayedGames = [...score.games].sort(
+    (a, b) => a.game.starts_at - b.game.starts_at || a.game.id.localeCompare(b.game.id),
+  );
   let foundNextPick = false;
   const rows = displayedGames.map((gameScore) => {
     const isEditable = editable(gameScore);

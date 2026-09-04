@@ -214,9 +214,8 @@ input, select { background: #fffdf5; border: 1px solid #a99691; border-radius: .
 .danger-zone { border-top-color: #63333a !important; }
 .icon-button { background: none; border: 0; font-size: .65rem; font-weight: 800; padding: .5rem; }
 .danger-text { color: var(--red); }
-.prediction-admin-row { align-items: center; display: grid; gap: .6rem; grid-template-columns: minmax(8rem, 1fr) auto auto; }
-.prediction-admin-row > div { min-width: 0; }
-.prediction-admin-row form { align-items: center; border: 0; display: flex; gap: .35rem; margin: 0; padding: 0; }
+.prediction-admin-row .prediction-admin-actions { align-items: flex-end; border-top: 1px solid var(--line); display: flex; gap: .6rem; justify-content: space-between; margin-top: .75rem; padding-top: .75rem; }
+.prediction-admin-row form { align-items: flex-end; border: 0; display: flex; gap: .35rem; margin: 0; padding: 0; }
 .prediction-admin-row input[type="number"] { width: 4.5rem; }
 .sync-stats { display: grid; gap: .55rem; grid-template-columns: repeat(3, 1fr); }
 .sync-stats div { background: #2b070f; border-radius: .7rem; padding: .65rem; }

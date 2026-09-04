@@ -150,7 +150,10 @@ export async function syncEspnGames(env: AppEnv, now = new Date()): Promise<Sync
 export function shouldFetchOnSchedule(now: Date): boolean {
   const month = now.getUTCMonth();
   const inSeason = month >= 6 || month === 0;
-  return inSeason || (now.getUTCDate() === 1 && now.getUTCHours() < 6);
+  const monthlyOffseasonSync = now.getUTCDate() === 1 &&
+    now.getUTCHours() === 0 &&
+    now.getUTCMinutes() < 3;
+  return inSeason || monthlyOffseasonSync;
 }
 
 export { PROVIDER as ESPN_PROVIDER };

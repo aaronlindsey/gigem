@@ -126,6 +126,9 @@ export function layout(options: LayoutOptions): string {
   <meta name="theme-color" content="#20030a">
   <meta name="description" content="${escapeHtml(options.description ?? "Texas A&M football score predictions")}">
   <title>${escapeHtml(options.title)} · Gig'em</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/ol-sarge-favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/images/site.webmanifest">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>

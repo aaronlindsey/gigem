@@ -35,6 +35,18 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await playerPage.goto("/scores");
   await expect(playerPage.getByRole("heading", { name: "Howdy, Alice!" })).toBeVisible();
   await expect(playerPage.locator("[data-testid=player-total]")).toHaveText("25");
+  const orderedGameIds = await playerPage.locator("[data-testid^=score-game-]").evaluateAll((cards) =>
+    cards.map((card) => card.getAttribute("data-testid")),
+  );
+  expect(orderedGameIds).toEqual([
+    "score-game-game-1",
+    "score-game-game-2",
+    "score-game-game-3",
+    "score-game-game-started",
+    "score-game-game-tbd",
+    "score-game-game-future",
+  ]);
+  await expect(playerPage.locator(".featured-pick")).toHaveAttribute("data-testid", "score-game-game-tbd");
   await expect(playerPage.locator("[data-testid=score-game-game-2]")).toContainText("Dropped");
   await expect(playerPage.locator("[data-testid=score-game-game-2] s")).toHaveText("+20");
   await expect(playerPage.locator("[data-testid=score-game-game-3]")).toContainText("Whoop! −5 bonus");
@@ -82,8 +94,17 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
 test("displays times in the browser time zone", async ({ browser }) => {
   const context = await browser.newContext({ timezoneId: "America/Los_Angeles" });
   const page = await context.newPage();
-  await page.goto("/games/game-future");
+  await page.goto("/");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/images/ol-sarge-favicon-32.png");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/images/apple-touch-icon.png");
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", "/images/site.webmanifest");
+  const manifestResponse = await page.request.get("/images/site.webmanifest");
+  expect(manifestResponse.ok()).toBe(true);
+  await expect(manifestResponse.json()).resolves.toMatchObject({
+    icons: [{ sizes: "192x192" }, { sizes: "512x512" }],
+  });
 
+  await page.goto("/games/game-future");
   const kickoff = page.locator("time[data-compact-game-date]");
   const expected = await kickoff.evaluate((element) => {
     const date = new Date((element as HTMLTimeElement).dateTime);
@@ -127,6 +148,14 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   await expect(adminPage.getByRole("link", { name: "Admin", exact: true })).toBeVisible();
 
   await adminPage.goto("/admin");
+  const hiddenPrediction = adminPage.locator("details.prediction-admin-row", {
+    hasText: /Alice.*Future State/,
+  });
+  const hiddenPredictionInput = hiddenPrediction.locator('input[name="predicted_score"]');
+  await expect(hiddenPredictionInput).toBeHidden();
+  await hiddenPrediction.locator("summary").click();
+  await expect(hiddenPredictionInput).toBeVisible();
+
   const futureGame = adminPage.locator("#games > details.admin-card", { hasText: "Future State" });
   await futureGame.locator("summary").click();
   const gameForm = futureGame.locator("form").first();
