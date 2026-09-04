@@ -1,7 +1,11 @@
-# Gig'em v2
+# Gig'em
 
-A small Texas A&M football score-prediction game built with TypeScript,
+A Texas A&M football score-prediction game built with TypeScript,
 Cloudflare Workers, D1, and Cloudflare Access.
+
+## Why I made this
+
+My family has a competition to guess the score of each Texas A&M football game—I thought it would be fun to turn this into a simple app!
 
 ## How the game works
 
@@ -222,9 +226,3 @@ current terms before production use.
 - Production fails closed when Access or admin configuration is absent.
 - Admin overrides intentionally bypass kickoff but still require nonnegative
   integer scores.
-
-## Fresh install
-
-v2 intentionally has no v1/Geode migration or compatibility layer. Production
-starts with an empty D1 database; use the admin dashboard or ESPN sync to create
-the schedule and add players by email.
