@@ -61,6 +61,7 @@ export function parseEspnSchedule(payload: unknown): SyncedGame[] {
     }
 
     const completed = object(object(competition.status)?.type)?.completed === true;
+    const kickoffTimeTbd = !completed && competition.timeValid === false;
     const actualScore = completed ? competitorScore(aggies) : null;
     if (completed && actualScore === null) {
       throw new Error(`ESPN marked event ${externalId} final without an Aggie score.`);
@@ -70,6 +71,7 @@ export function parseEspnSchedule(payload: unknown): SyncedGame[] {
       externalId,
       opponent: opponentName.slice(0, 120),
       startsAt: Math.floor(startsAtMilliseconds / 1000),
+      kickoffTimeTbd,
       actualScore,
     });
   }

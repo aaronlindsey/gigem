@@ -15,6 +15,10 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await expect(page.getByText("Picks are under wraps")).toBeVisible();
   await expect(page.getByText("Alice")).toHaveCount(0);
 
+  await page.goto("/games/game-tbd");
+  await expect(page.getByText(/Time TBD/)).toBeVisible();
+  await expect(page.getByText("Picks are under wraps")).toBeVisible();
+
   await page.goto("/games/game-1");
   await expect(page.getByRole("row", { name: /Alice 10 \+30/ })).toBeVisible();
   await expect(page.getByRole("row", { name: /Carol 0 \(no pick\) \+40/ })).toBeVisible();
@@ -36,6 +40,14 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await futureInput.locator("xpath=ancestor::form").getByRole("button", { name: "Save" }).click();
   await expect(playerPage.getByText("Prediction saved. Good bull!")).toBeVisible();
   await expect(futureInput).toHaveValue("44");
+
+  const tbdGame = playerPage.locator("[data-testid=score-game-game-tbd]");
+  await expect(tbdGame).toContainText("Time TBD");
+  await expect(tbdGame).toContainText("Open");
+  const tbdInput = playerPage.locator("#prediction-game-tbd");
+  await tbdInput.fill("45");
+  await tbdInput.locator("xpath=ancestor::form").getByRole("button", { name: "Save" }).click();
+  await expect(tbdInput).toHaveValue("45");
 
   const resultUrl = await playerPage.evaluate(async () => {
     const response = await fetch("/scores/predictions/game-started", {
@@ -74,7 +86,10 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   await adminPage.goto("/admin");
   await adminPage.getByRole("button", { name: "Sync now" }).click();
   await expect(adminPage.getByText(/sync complete: 2 seen, 2 written/)).toBeVisible();
-  await expect(adminPage.locator("#games > details.admin-card", { hasText: "Mock University" })).toHaveCount(1);
+  const tbdGame = adminPage.locator("#games > details.admin-card", { hasText: "Mock University" });
+  await expect(tbdGame).toHaveCount(1);
+  await expect(tbdGame).toContainText("Time TBD");
+  await expect(tbdGame.locator('input[name="kickoff_time_tbd"]')).toBeChecked();
   await expect(adminPage.locator("#games > details.admin-card", { hasText: "Final State" })).toContainText("Final: 42");
 
   await adminPage.getByRole("button", { name: "Sync now" }).click();

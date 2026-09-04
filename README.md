@@ -183,6 +183,8 @@ For each valid event it:
 
 - adds a missing game using ESPN's event ID;
 - updates opponent names and pre-kickoff start times;
+- marks kickoff times as TBD when ESPN reports `timeValid: false`, keeping picks
+  open until ESPN publishes a time;
 - imports the Aggie score only when ESPN marks the event completed;
 - never deletes a game omitted from ESPN;
 - never changes a game whose **Prevent ESPN from changing this game** checkbox
@@ -199,7 +201,8 @@ ESPN's current terms before production use.
 
 ## Security notes
 
-- Predictions are hidden publicly until the Worker clock reaches kickoff.
+- Predictions are hidden publicly until the Worker clock reaches kickoff. Games
+  with a TBD kickoff remain hidden and open for picks until a time is published.
 - Player writes use a conditional D1 statement, so a request racing kickoff
   cannot save late.
 - Protected pages are `no-store`; static assets are cached.

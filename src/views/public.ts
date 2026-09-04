@@ -1,6 +1,6 @@
 import type { Game, Player, Prediction } from "../types";
 import type { PlayerScore } from "../scoring";
-import { emptyState, escapeHtml, formatDate, layout, scoreText } from "./common";
+import { emptyState, escapeHtml, formatGameDate, layout, scoreText } from "./common";
 
 export function scoreboardPage(standings: PlayerScore[], games: Game[]): string {
   const standingsMarkup = standings.length === 0
@@ -19,9 +19,9 @@ export function scoreboardPage(standings: PlayerScore[], games: Game[]): string 
     : `<div class="game-grid">
         ${games.map((game) => `
           <a class="game-card" href="/games/${encodeURIComponent(game.id)}">
-            <span class="eyebrow">${game.actual_score === null ? (game.starts_at * 1000 <= Date.now() ? "Underway" : "Upcoming") : "Final"}</span>
+            <span class="eyebrow">${game.actual_score === null ? (!game.kickoff_time_tbd && game.starts_at * 1000 <= Date.now() ? "Underway" : "Upcoming") : "Final"}</span>
             <strong>vs. ${escapeHtml(game.opponent)}</strong>
-            <span>${escapeHtml(formatDate(game.starts_at))}</span>
+            <span>${escapeHtml(formatGameDate(game))}</span>
             ${game.actual_score === null ? "" : `<span class="actual-pill">Aggies ${game.actual_score}</span>`}
           </a>`).join("")}
        </div>`;
@@ -53,7 +53,8 @@ export function gameDetailsPage(
   scores: PlayerScore[],
   now: number,
 ): string {
-  const started = game.starts_at <= now;
+  const started = game.actual_score !== null ||
+    (!game.kickoff_time_tbd && game.starts_at <= now);
   const predictionMap = new Map(
     predictions.filter((prediction) => prediction.game_id === game.id)
       .map((prediction) => [prediction.player_id, prediction.predicted_score]),
@@ -103,7 +104,7 @@ export function gameDetailsPage(
       <section class="hero compact">
         <p class="eyebrow">${game.actual_score === null ? (started ? "Game in progress" : "Upcoming game") : "Final"}</p>
         <h1>Texas A&amp;M vs. ${escapeHtml(game.opponent)}</h1>
-        <p>${escapeHtml(formatDate(game.starts_at))}</p>
+        <p>${escapeHtml(formatGameDate(game))}</p>
         ${game.actual_score === null ? "" : `<div class="final-score"><span>Aggies</span><strong>${game.actual_score}</strong></div>`}
       </section>
       <section class="panel">

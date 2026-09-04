@@ -56,13 +56,22 @@ export async function getGame(db: D1Database, id: string): Promise<Game | null> 
 
 export async function createGame(
   db: D1Database,
-  game: Pick<Game, "id" | "opponent" | "starts_at" | "actual_score" | "sync_locked">,
+  game: Pick<Game, "id" | "opponent" | "starts_at" | "kickoff_time_tbd" | "actual_score" | "sync_locked">,
 ): Promise<void> {
   await db
     .prepare(
-      "INSERT INTO games (id, opponent, starts_at, actual_score, sync_locked) VALUES (?, ?, ?, ?, ?)",
+      `INSERT INTO games
+         (id, opponent, starts_at, kickoff_time_tbd, actual_score, sync_locked)
+       VALUES (?, ?, ?, ?, ?, ?)`,
     )
-    .bind(game.id, game.opponent, game.starts_at, game.actual_score, game.sync_locked)
+    .bind(
+      game.id,
+      game.opponent,
+      game.starts_at,
+      game.kickoff_time_tbd,
+      game.actual_score,
+      game.sync_locked,
+    )
     .run();
 }
 
@@ -71,16 +80,18 @@ export async function updateGame(
   id: string,
   opponent: string,
   startsAt: number,
+  kickoffTimeTbd: number,
   actualScore: number | null,
   syncLocked: number,
 ): Promise<boolean> {
   const result = await db
     .prepare(
       `UPDATE games
-       SET opponent = ?, starts_at = ?, actual_score = ?, sync_locked = ?, updated_at = unixepoch()
+       SET opponent = ?, starts_at = ?, kickoff_time_tbd = ?, actual_score = ?,
+           sync_locked = ?, updated_at = unixepoch()
        WHERE id = ?`,
     )
-    .bind(opponent, startsAt, actualScore, syncLocked, id)
+    .bind(opponent, startsAt, kickoffTimeTbd, actualScore, syncLocked, id)
     .run();
   return result.meta.changes > 0;
 }
@@ -108,7 +119,8 @@ export async function upsertPlayerPredictionBeforeKickoff(
     .prepare(
       `INSERT INTO predictions (player_id, game_id, predicted_score, submitted_at, updated_at)
        SELECT ?, g.id, ?, ?, ? FROM games g
-       WHERE g.id = ? AND g.starts_at > ?
+       WHERE g.id = ? AND g.actual_score IS NULL
+         AND (g.kickoff_time_tbd = 1 OR g.starts_at > ?)
        ON CONFLICT(player_id, game_id) DO UPDATE SET
          predicted_score = excluded.predicted_score,
          updated_at = excluded.updated_at`,
@@ -225,19 +237,21 @@ export async function upsertSyncedGames(
   const statements = games.map((game) => db
     .prepare(
       `INSERT INTO games
-         (id, opponent, starts_at, actual_score, external_source, external_id)
-       VALUES (?, ?, ?, ?, 'espn', ?)
+         (id, opponent, starts_at, kickoff_time_tbd, actual_score, external_source, external_id)
+       VALUES (?, ?, ?, ?, ?, 'espn', ?)
        ON CONFLICT(external_source, external_id) DO UPDATE SET
          opponent = excluded.opponent,
          starts_at = CASE
-           WHEN games.starts_at > ? THEN excluded.starts_at
+           WHEN games.starts_at > ? OR games.kickoff_time_tbd = 1 THEN excluded.starts_at
            ELSE games.starts_at
          END,
+         kickoff_time_tbd = excluded.kickoff_time_tbd,
          actual_score = COALESCE(excluded.actual_score, games.actual_score),
          updated_at = ?
        WHERE games.sync_locked = 0 AND (
          games.opponent <> excluded.opponent OR
-         (games.starts_at > ? AND games.starts_at <> excluded.starts_at) OR
+         games.kickoff_time_tbd <> excluded.kickoff_time_tbd OR
+         ((games.starts_at > ? OR games.kickoff_time_tbd = 1) AND games.starts_at <> excluded.starts_at) OR
          (excluded.actual_score IS NOT NULL AND games.actual_score IS NOT excluded.actual_score)
        )`,
     )
@@ -245,6 +259,7 @@ export async function upsertSyncedGames(
       crypto.randomUUID(),
       game.opponent,
       game.startsAt,
+      Number(game.kickoffTimeTbd),
       game.actualScore,
       game.externalId,
       now,

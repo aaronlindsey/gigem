@@ -75,6 +75,7 @@ export async function addGame(request: Request, env: AppEnv): Promise<Response> 
       id: crypto.randomUUID(),
       opponent: requiredText(form, "opponent", 120),
       starts_at: utcTimestamp(form),
+      kickoff_time_tbd: checked(form, "kickoff_time_tbd"),
       actual_score: nonnegativeInteger(form, "actual_score", { nullable: true, max: 999 }),
       sync_locked: checked(form, "sync_locked"),
     });
@@ -95,6 +96,7 @@ export async function editGame(
     gameId,
     requiredText(form, "opponent", 120),
     utcTimestamp(form),
+    checked(form, "kickoff_time_tbd"),
     nonnegativeInteger(form, "actual_score", { nullable: true, max: 999 }),
     checked(form, "sync_locked"),
   );

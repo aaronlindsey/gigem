@@ -15,7 +15,10 @@ INSERT INTO games (id, opponent, starts_at, actual_score) VALUES
   ('game-2', 'Best Pick Tech', unixepoch() - 300000, 30),
   ('game-3', 'Bonus University', unixepoch() - 200000, 21),
   ('game-started', 'Locked College', unixepoch() - 1000, NULL),
+  ('game-tbd', 'TBD State', unixepoch() - 1000, NULL),
   ('game-future', 'Future State', unixepoch() + 400000, NULL);
+
+UPDATE games SET kickoff_time_tbd = 1 WHERE id = 'game-tbd';
 
 INSERT INTO predictions (player_id, game_id, predicted_score) VALUES
   ('alice', 'game-1', 10),

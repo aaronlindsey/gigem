@@ -7,7 +7,8 @@ const payload = {
       date: "2099-09-01T23:00:00Z",
       competitions: [
         {
-          date: "2099-09-01T23:00:00Z",
+          date: "2099-09-01T04:00:00Z",
+          timeValid: false,
           competitors: [
             {
               team: { id: "245", shortDisplayName: "Texas A&M" },
@@ -28,6 +29,7 @@ const payload = {
       competitions: [
         {
           date: "2020-09-01T23:00:00Z",
+          timeValid: true,
           competitors: [
             {
               team: { id: "245", shortDisplayName: "Texas A&M" },

@@ -1,5 +1,5 @@
 import type { Game, Player, Prediction, SyncStatus } from "../types";
-import { escapeHtml, formatDate, layout, notice, utcInput } from "./common";
+import { escapeHtml, formatDate, formatGameDate, layout, notice, utcInput } from "./common";
 
 const notices: Record<string, string> = {
   "game-created": "Game added.",
@@ -24,6 +24,10 @@ function gameFields(game?: Game): string {
       <input name="actual_score" type="number" min="0" max="999" inputmode="numeric" value="${game?.actual_score ?? ""}" placeholder="Not final">
     </label>
     <label class="checkbox-label">
+      <input name="kickoff_time_tbd" type="checkbox" ${game?.kickoff_time_tbd ? "checked" : ""}>
+      Kickoff time is TBD
+    </label>
+    <label class="checkbox-label">
       <input name="sync_locked" type="checkbox" ${game?.sync_locked ? "checked" : ""}>
       Prevent ESPN from changing this game
     </label>
@@ -38,7 +42,7 @@ function playerOptions(players: Player[], selected = ""): string {
 
 function gameOptions(games: Game[], selected = ""): string {
   return games.map((game) =>
-    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""}>${escapeHtml(game.opponent)} — ${escapeHtml(formatDate(game.starts_at))}</option>`,
+    `<option value="${escapeHtml(game.id)}" ${game.id === selected ? "selected" : ""}>${escapeHtml(game.opponent)} — ${escapeHtml(formatGameDate(game))}</option>`,
   ).join("");
 }
 
@@ -59,7 +63,7 @@ export function adminPage(
 
   const gamesMarkup = games.map((game) => `<details class="admin-card">
     <summary>
-      <span><strong>vs. ${escapeHtml(game.opponent)}</strong><small>${escapeHtml(formatDate(game.starts_at))}</small></span>
+      <span><strong>vs. ${escapeHtml(game.opponent)}</strong><small>${escapeHtml(formatGameDate(game))}</small></span>
       <span>${game.actual_score === null ? "Scheduled" : `Final: ${game.actual_score}`}${game.external_id ? " · ESPN" : ""}</span>
     </summary>
     <form method="post" action="/admin/games/${encodeURIComponent(game.id)}">

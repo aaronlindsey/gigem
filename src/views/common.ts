@@ -1,3 +1,5 @@
+import type { Game } from "../types";
+
 export function escapeHtml(value: unknown): string {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -19,6 +21,18 @@ export function formatDate(timestamp: number | null): string {
     minute: "2-digit",
     timeZoneName: "short",
   }).format(new Date(timestamp * 1000));
+}
+
+export function formatGameDate(game: Game): string {
+  if (!game.kickoff_time_tbd) return formatDate(game.starts_at);
+  const date = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(game.starts_at * 1000));
+  return `${date} · Time TBD`;
 }
 
 export function utcInput(timestamp: number): string {

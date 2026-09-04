@@ -22,6 +22,7 @@ export interface Game {
   id: string;
   opponent: string;
   starts_at: number;
+  kickoff_time_tbd: number;
   actual_score: number | null;
   external_source: string | null;
   external_id: string | null;
@@ -51,5 +52,6 @@ export interface SyncedGame {
   externalId: string;
   opponent: string;
   startsAt: number;
+  kickoffTimeTbd: boolean;
   actualScore: number | null;
 }

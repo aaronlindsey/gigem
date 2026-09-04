@@ -1,5 +1,5 @@
 import type { PlayerScore } from "../scoring";
-import { escapeHtml, formatDate, layout, notice, scoreText } from "./common";
+import { escapeHtml, formatGameDate, layout, notice, scoreText } from "./common";
 
 const statusMessages: Record<string, { text: string; kind: "success" | "error" }> = {
   saved: { text: "Prediction saved. Good bull!", kind: "success" },
@@ -19,7 +19,8 @@ export function playerScoresPage(
 ): string {
   const statusMessage = status ? statusMessages[status] : undefined;
   const rows = score.games.map((gameScore) => {
-    const editable = gameScore.game.starts_at > now;
+    const editable = gameScore.game.actual_score === null &&
+      (Boolean(gameScore.game.kickoff_time_tbd) || gameScore.game.starts_at > now);
     const droppedClass = gameScore.dropped ? " dropped-row" : "";
     const prediction = editable
       ? `<form class="prediction-form" method="post" action="/scores/predictions/${encodeURIComponent(gameScore.game.id)}">
@@ -44,7 +45,9 @@ export function playerScoresPage(
       <div class="game-cell">
         <span class="eyebrow">${editable ? "Open" : "Locked"}</span>
         <h3><a href="/games/${encodeURIComponent(gameScore.game.id)}">vs. ${escapeHtml(gameScore.game.opponent)}</a></h3>
-        <time datetime="${new Date(gameScore.game.starts_at * 1000).toISOString()}">${escapeHtml(formatDate(gameScore.game.starts_at))}</time>
+        ${gameScore.game.kickoff_time_tbd
+          ? `<span>${escapeHtml(formatGameDate(gameScore.game))}</span>`
+          : `<time datetime="${new Date(gameScore.game.starts_at * 1000).toISOString()}">${escapeHtml(formatGameDate(gameScore.game))}</time>`}
       </div>
       <div class="score-cell"><span class="cell-label">Your prediction</span>${prediction}</div>
       <div class="score-cell"><span class="cell-label">Actual</span><strong>${gameScore.game.actual_score ?? "—"}</strong></div>
