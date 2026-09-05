@@ -14,12 +14,19 @@ const fullDateFormatter = new Intl.DateTimeFormat("en-US", {
   timeZoneName: "short",
 });
 const dateOnlyFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "UTC",
   weekday: "short",
   month: "short",
   day: "numeric",
   year: "numeric",
 });
 const compactDateFormatter = new Intl.DateTimeFormat("en-US", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+});
+const compactDateOnlyFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "UTC",
   weekday: "short",
   month: "short",
   day: "numeric",
@@ -33,7 +40,7 @@ function localDateText(value, dateOnly = false, compact = false) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
   if (compact) {
-    const compactDate = compactDateFormatter.format(date);
+    const compactDate = (dateOnly ? compactDateOnlyFormatter : compactDateFormatter).format(date);
     return dateOnly ? compactDate : `${compactDate} · ${compactTimeFormatter.format(date)}`;
   }
   return (dateOnly ? dateOnlyFormatter : fullDateFormatter).format(date);
@@ -47,8 +54,9 @@ document.querySelectorAll("time[data-local-date-time], time[data-local-date]").f
 document.querySelectorAll("time[data-compact-game-date]").forEach((time) => {
   const text = localDateText(time.dateTime, time.hasAttribute("data-date-only"), true);
   if (text) {
-    time.textContent = `${text}${time.hasAttribute("data-date-only") ? " · Time TBD" : ""}`;
-    time.title = fullDateFormatter.format(new Date(time.dateTime));
+    const dateOnly = time.hasAttribute("data-date-only");
+    time.textContent = `${text}${dateOnly ? " · Time TBD" : ""}`;
+    time.title = (dateOnly ? dateOnlyFormatter : fullDateFormatter).format(new Date(time.dateTime));
   }
 });
 

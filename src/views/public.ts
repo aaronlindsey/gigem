@@ -29,8 +29,9 @@ export function scoreboardPage(
   now: number,
 ): string {
   const nextPick = games.find((game) =>
-    game.actual_score === null && !game.kickoff_time_tbd && game.starts_at > now
-  ) ?? games.find((game) => game.actual_score === null && Boolean(game.kickoff_time_tbd));
+    game.actual_score === null &&
+    (Boolean(game.kickoff_time_tbd) || game.starts_at > now)
+  );
 
   const nextMarkup = nextPick
     ? `<a class="next-game" href="/games/${encodeURIComponent(nextPick.id)}">

@@ -150,7 +150,7 @@ export function layout(options: LayoutOptions): string {
 }
 
 export function notice(message: string, kind: "success" | "error" = "success"): string {
-  return `<div class="notice notice-${kind}" role="status">${escapeHtml(message)}</div>`;
+  return `<div class="notice notice-${kind}" role="${kind === "error" ? "alert" : "status"}">${escapeHtml(message)}</div>`;
 }
 
 export function emptyState(title: string, message: string): string {

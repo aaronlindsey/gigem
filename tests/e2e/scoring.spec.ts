@@ -10,6 +10,7 @@ test("calculates absolute scores, bonuses, and relative drops", async ({ browser
   await expect(page.locator("[data-testid=total-carol]")).toHaveText("20");
   await expect(page.locator("[data-testid=total-bob]")).toHaveText("24");
   await expect(page.locator("[data-testid=total-alice]")).toHaveText("25");
+  await expect(page.locator("a.next-game")).toHaveAttribute("href", "/games/game-tbd");
 
   await page.goto("/games/game-future");
   await expect(page.getByText("Picks are under wraps")).toBeVisible();
@@ -169,6 +170,7 @@ test("ESPN sync is authenticated and idempotent", async ({ browser }) => {
   const tbdGame = adminPage.locator("#games > details.admin-card", { hasText: "Mock University" });
   await expect(tbdGame).toHaveCount(1);
   await expect(tbdGame).toContainText("Time TBD");
+  await expect(tbdGame.locator("time[data-local-date]")).toHaveText("Tue, Sep 1, 2099");
   await expect(tbdGame.locator('input[name="kickoff_time_tbd"]')).toBeChecked();
   await expect(tbdGame.locator('select[name="site"]')).toHaveValue("away");
   await expect(tbdGame.locator('input[name="venue"]')).toHaveValue("Mock Stadium");

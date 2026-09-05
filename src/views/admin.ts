@@ -5,7 +5,7 @@ const notices: Record<string, string> = {
   "game-created": "Game added.",
   "game-saved": "Game updated.",
   "game-deleted": "Game and its predictions deleted.",
-  "player-created": "Player added. That email can now use My Scores.",
+  "player-created": "Player added. That email can now use My picks.",
   "player-saved": "Player updated.",
   "player-deleted": "Player and their predictions deleted.",
   "prediction-saved": "Prediction override saved.",
