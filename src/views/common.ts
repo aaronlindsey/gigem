@@ -130,7 +130,7 @@ export function layout(options: LayoutOptions): string {
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/images/site.webmanifest">
   <link rel="stylesheet" href="/styles.css">
-  <script src="/app.js" defer></script>
+  <script src="/app.js?v=20260905-1" defer></script>
 </head>
 <body>
   <div class="app-shell">
