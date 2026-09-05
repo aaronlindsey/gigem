@@ -1,0 +1,24 @@
+{
+  "name": "Gig'em Score Predictions",
+  "short_name": "Gig'em",
+  "description": "Texas A&M football score predictions",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#20030a",
+  "theme_color": "#20030a",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

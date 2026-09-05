@@ -1,0 +1,22 @@
+{
+  "name": "gigem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Texas A&M football score prediction game on Cloudflare Workers",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "types": "wrangler types",
+    "typecheck": "npm run types && tsc --noEmit",
+    "db:migrate:local": "wrangler d1 migrations apply gigem --local",
+    "db:migrate:remote": "wrangler d1 migrations apply gigem --remote",
+    "db:seed:local": "wrangler d1 execute gigem --local --file=seed.sql",
+    "db:e2e:reset": "rm -rf .wrangler/e2e && wrangler d1 migrations apply gigem --local --persist-to .wrangler/e2e && wrangler d1 execute gigem --local --persist-to .wrangler/e2e --file=tests/e2e/fixtures.sql",
+    "test:e2e": "npm run db:e2e:reset && playwright test",
+    "deploy": "npm run typecheck && npm run db:migrate:remote && wrangler deploy"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.128.0"
+  }
+}

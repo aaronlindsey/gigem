@@ -1,47 +1,12 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**
-!**/src/test/**
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Geode ###
-*.if
-*.crf
-*.drf
-*.krf
-*.lk
-*view.dat
-*views.log
-
-backups
-*.pem
-
+node_modules/
+.wrangler/
+test-results/
+playwright-report/
+blob-report/
+.dev.vars
+.env*
+!.dev.vars.example
+*.log
 .DS_Store
-bin
+.idea/
+.vscode/
